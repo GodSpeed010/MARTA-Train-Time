@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MARTA Train Time</string>
+    
+    <string-array name="cardinal_directions">
+        <item>N</item>
+        <item>S</item>
+        <item>E</item>
+        <item>W</item>
+    </string-array>
+
+    <string-array name="rail_lines">
+        <item>RED</item>
+        <item>GOLD</item>
+        <item>BLUE</item>
+        <item>GREEN</item>
+    </string-array>
+</resources>
