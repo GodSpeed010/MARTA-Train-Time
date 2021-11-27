@@ -16,22 +16,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/et_station"
+    <Spinner
+        android:id="@+id/sp_stations"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Station Name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bt_get"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:entries="@array/error" />
 
     <Spinner
         android:id="@+id/sp_rail_lines"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:entries="@array/rail_lines"
-        app:layout_constraintBottom_toTopOf="@+id/et_station"
+        app:layout_constraintBottom_toTopOf="@+id/sp_stations"
         app:layout_constraintEnd_toStartOf="@+id/sp_directions"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent" />
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:entries="@array/cardinal_directions"
-        app:layout_constraintBottom_toTopOf="@+id/et_station"
+        app:layout_constraintBottom_toTopOf="@+id/sp_stations"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/sp_rail_lines" />
 

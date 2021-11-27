@@ -14,4 +14,8 @@
         <item>BLUE</item>
         <item>GREEN</item>
     </string-array>
+
+    <string-array name="error">
+        <item>No Data Retrieved</item>
+    </string-array>
 </resources>

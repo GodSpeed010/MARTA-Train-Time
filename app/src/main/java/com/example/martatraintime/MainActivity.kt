@@ -7,9 +7,9 @@ import android.widget.*
 import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.example.martatraintime.models.Train
-import com.google.android.material.snackbar.Snackbar
 import okhttp3.Headers
-import org.w3c.dom.Text
+import java.util.*
+import kotlin.collections.HashSet
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,9 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //TODO set the spinner for stations
-//        setStationSpinner()
-        //temp solution, just compare strings
+
 
         val client: AsyncHttpClient = AsyncHttpClient()
 
@@ -32,8 +30,11 @@ class MainActivity : AppCompatActivity() {
                 val trains: List<Train> = Train.fromJsonArray(json.jsonArray)
                 Log.d("my_tag", "Retreived data for ${trains.size} trains")
 
+                //TODO
+                setStationSpinner(trains)
+
                 findViewById<Button>(R.id.bt_get).setOnClickListener {
-                    val station: String = findViewById<EditText>(R.id.et_station).text.toString()
+                    val station: String = findViewById<Spinner>(R.id.sp_stations).selectedItem.toString()
                     val direction: String = findViewById<Spinner>(R.id.sp_directions).selectedItem.toString()
                     val line: String = findViewById<Spinner>(R.id.sp_rail_lines).selectedItem.toString()
 
@@ -60,15 +61,6 @@ class MainActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.tv_wait_time).text = ""
                     }
 
-//                    //loop through every json object
-//                    for(i in 0..json.jsonArray.length()) {
-//                        //if direction, station(ignorecase), and line match
-//
-//
-//                        if("example".equals("EXAMPLE", ignoreCase = true))
-//                        Log.d("my_tag", "data at index $i is ${json.jsonArray.getJSONObject(i)}")
-//                    }
-
                 }
 
             }
@@ -81,12 +73,25 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //TODO
-//    fun setStationSpinner() {
-//        val cardinalDirections = resources.getStringArray(R.array.cardinal_directions)
-//        val spinner = findViewById<Spinner>(R.id.sp_rail_lines)
-//        val adapter = ArrayAdapter(this,
-//            android.R.layout.simple_spinner_item, cardinalDirections)
-//        spinner.adapter = adapter
-//    }
+    //populate the sp_stations Spinner with the list of station names retrieved from the APi
+    fun setStationSpinner(trains: List<Train>) {
+        //station names will be ordered in alphabetical order with no duplicates
+        val stationNames: TreeSet<String> = TreeSet()
+
+        //populate stationNames with the list of all station names retrieved from API
+        for (train in trains) {
+            stationNames.add(train.station)
+        }
+
+        //convert stationNames to MutableList so it can be used with adapter
+        val stationList = stationNames.toMutableList()
+
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_spinner_item, stationList
+        )
+
+        findViewById<Spinner>(R.id.sp_stations).adapter = adapter
+
+    }
 }
