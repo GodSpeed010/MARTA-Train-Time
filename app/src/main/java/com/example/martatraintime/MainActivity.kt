@@ -8,6 +8,7 @@ import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.example.martatraintime.models.Train
 import okhttp3.Headers
+import okhttp3.internal.wait
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -19,8 +20,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
         val client: AsyncHttpClient = AsyncHttpClient()
 
         client[martaEndpoint, object : JsonHttpResponseHandler() {
@@ -28,9 +27,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d("my_tag", "JSON success")
 
                 val trains: List<Train> = Train.fromJsonArray(json.jsonArray)
-                Log.d("my_tag", "Retreived data for ${trains.size} trains")
+                Log.d("my_tag", "Retrieved data for ${trains.size} trains")
 
-                //TODO
                 setStationSpinner(trains)
 
                 findViewById<Button>(R.id.bt_get).setOnClickListener {
@@ -44,21 +42,53 @@ class MainActivity : AppCompatActivity() {
                     Log.d("my_tag", "user station is $station, direction is $direction, and line is $line")
 
                     var found: Boolean = false
-                    for (i in 0 until trains.size) {
+                    var minTimeIndex: Int = -1
+                    for (i in trains.indices) {
 
                         if (trains[i].equals(userTrain)) {
-                            found = true
-                            Log.d("my_tag", "FOUND A MATCH")
-                            findViewById<TextView>(R.id.tv_wait_time).text = trains[i].waitingTime
+                            Log.d("my_tag", "MATCH FOUND at index $i")
+
+                            //if this is first match, set this index as minTimeIndex
+                            if (minTimeIndex == -1) {
+                                Log.d("my_tag", "FIRST MATCH")
+                                Log.d("my_tag", "train wait_time is ${trains[i].waitingTime}")
+                                minTimeIndex = i
+                            }
+
+                            //wait time can be 'Arriving', so check if waitTime has an Int
+                            if ( !hasInt(trains[i].waitingTime) ) {
+                                Log.d("my_tag", "waitingTime has no Int")
+                                //set minTimeIndex and break out of loop because 'Arriving' is the soonest possibility
+                                minTimeIndex = i
+                                break
+                            } else {
+                                val currWaitTime: Int = trains[i].waitingTime.filter { it.isDigit() }.toInt()
+                                val minWaitTime: Int = trains[minTimeIndex].waitingTime.filter { it.isDigit() }.toInt()
+
+                                Log.d("my_tag", "checking if $currWaitTime < $minWaitTime")
+                                //if current iteration's wait time is less than trains[minTimeIndex]'s, adjust minTimeIndex
+                                if (currWaitTime < minWaitTime) {
+                                    Log.d("my_tag", "condition True; changed minTimeIndex to $i")
+                                    minTimeIndex = i
+                                }
+                            }
+
                         }
 
                     }
-                    if (!found) {
+
+                    //if minTimeIndex has default val of -1, there was no match
+                    if (minTimeIndex == -1) {
+                        Log.d("my_tag", "No Match")
+
                         Toast.makeText(applicationContext,
                         "Not Found",
                         Toast.LENGTH_SHORT).show()
 
                         findViewById<TextView>(R.id.tv_wait_time).text = ""
+                    } else {
+                        Log.d("my_tag", "displaying ${trains[minTimeIndex].waitingTime}")
+                        findViewById<TextView>(R.id.tv_wait_time).text = trains[minTimeIndex].waitingTime
                     }
 
                 }
@@ -69,7 +99,6 @@ class MainActivity : AppCompatActivity() {
                 Log.d("my_tag", "failure")
             }
         }]
-
 
     }
 
@@ -93,5 +122,17 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Spinner>(R.id.sp_stations).adapter = adapter
 
+    }
+
+    fun hasInt(s: String): Boolean {
+        //loop through String
+        for (x in s) {
+            //if any digits are found, return true
+            if(x.isDigit()) {
+                return true
+            }
+        }
+        //else no digits were found
+        return false
     }
 }
