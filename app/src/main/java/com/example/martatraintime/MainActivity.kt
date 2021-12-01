@@ -1,6 +1,5 @@
 package com.example.martatraintime
 
-import android.content.ClipData
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -127,20 +126,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setStaticDropdowns() {
-        setDropdown(
+        setCustomDropdown(
             resources.getStringArray(R.array.rail_lines),
             R.id.sp_rail_lines
         )
 
-        setDropdown(
+        setCustomDropdown(
             resources.getStringArray(R.array.cardinal_directions),
             R.id.sp_directions
         )
     }
 
-    fun setDropdown(stringArray: Array<String>, dropdownId: Int) {
+    fun setCustomDropdown(stringArray: Array<String>, dropdownId: Int) {
         val adapter: MyAdapter = MyAdapter(
             this,
+            stringArray
+        )
+
+        val editTextFilledExposedDropdown = findViewById<AutoCompleteTextView>(dropdownId)
+        editTextFilledExposedDropdown.setAdapter(adapter)
+
+        //auto-populate the dropdown with the first value in array so no need to handle for empty String
+        editTextFilledExposedDropdown.setText(editTextFilledExposedDropdown.adapter.getItem(0).toString(), false)
+    }
+
+    fun setDropdown(stringArray: Array<String>, dropdownId: Int) {
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            this,
+            R.layout.support_simple_spinner_dropdown_item,
             stringArray
         )
 
