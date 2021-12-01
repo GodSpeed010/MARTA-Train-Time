@@ -1,5 +1,7 @@
 package com.example.martatraintime
 
+import android.content.ClipData
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +10,13 @@ import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.example.martatraintime.models.Train
 import okhttp3.Headers
-import okhttp3.internal.wait
 import java.util.*
-import kotlin.collections.HashSet
+import android.widget.AutoCompleteTextView
+
+import android.widget.ArrayAdapter
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        setStaticDropdowns()
 
         val client: AsyncHttpClient = AsyncHttpClient()
 
@@ -32,16 +40,15 @@ class MainActivity : AppCompatActivity() {
                 setStationSpinner(trains)
 
                 findViewById<Button>(R.id.bt_get).setOnClickListener {
-                    val station: String = findViewById<Spinner>(R.id.sp_stations).selectedItem.toString()
-                    val direction: String = findViewById<Spinner>(R.id.sp_directions).selectedItem.toString()
-                    val line: String = findViewById<Spinner>(R.id.sp_rail_lines).selectedItem.toString()
+                    val station: String = findViewById<AutoCompleteTextView>(R.id.sp_stations).text.toString()
+                    val direction: String = findViewById<AutoCompleteTextView>(R.id.sp_directions).text.toString()
+                    val line: String = findViewById<AutoCompleteTextView>(R.id.sp_rail_lines).text.toString()
 
                     //create Train object using user inputted data
                     val userTrain: Train = Train(station, direction, line)
 
                     Log.d("my_tag", "user station is $station, direction is $direction, and line is $line")
 
-                    var found: Boolean = false
                     var minTimeIndex: Int = -1
                     for (i in trains.indices) {
 
@@ -97,6 +104,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(statusCode: Int, headers: Headers?, response: String, throwable: Throwable?) {
                 Log.d("my_tag", "failure")
+                findViewById<AutoCompleteTextView>(R.id.sp_stations).setText("Internet Error $statusCode", false)
             }
         }]
 
@@ -113,15 +121,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         //convert stationNames to MutableList so it can be used with adapter
-        val stationList = stationNames.toMutableList()
+        val stationArray = stationNames.toTypedArray()
 
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_spinner_item, stationList
+        setDropdown(stationArray, R.id.sp_stations)
+    }
+
+    fun setStaticDropdowns() {
+        setDropdown(
+            resources.getStringArray(R.array.rail_lines),
+            R.id.sp_rail_lines
         )
 
-        findViewById<Spinner>(R.id.sp_stations).adapter = adapter
+        setDropdown(
+            resources.getStringArray(R.array.cardinal_directions),
+            R.id.sp_directions
+        )
+    }
 
+    fun setDropdown(stringArray: Array<String>, dropdownId: Int) {
+        val adapter: MyAdapter = MyAdapter(
+            this,
+            stringArray
+        )
+
+        val editTextFilledExposedDropdown = findViewById<AutoCompleteTextView>(dropdownId)
+        editTextFilledExposedDropdown.setAdapter(adapter)
+
+        //auto-populate the dropdown with the first value in array so no need to handle for empty String
+        editTextFilledExposedDropdown.setText(editTextFilledExposedDropdown.adapter.getItem(0).toString(), false)
     }
 
     fun hasInt(s: String): Boolean {
@@ -135,4 +162,17 @@ class MainActivity : AppCompatActivity() {
         //else no digits were found
         return false
     }
+}
+
+//custom Adapter to prevent bug in dropdowns when switching orientation
+class MyAdapter(context: Context, val items: Array<String>)
+    : ArrayAdapter<String>(context, R.layout.support_simple_spinner_dropdown_item, items) {
+
+    private val noOpFilter = object : Filter() {
+        private val noOpResult = FilterResults()
+        override fun performFiltering(constraint: CharSequence?) = noOpResult
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {}
+    }
+
+    override fun getFilter() = noOpFilter
 }

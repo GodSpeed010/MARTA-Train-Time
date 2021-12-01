@@ -7,6 +7,59 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/test"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_marginHorizontal="30dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Line"
+        app:layout_constraintBottom_toTopOf="@id/test3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/test2">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/sp_rail_lines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/test2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_marginHorizontal="30dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Direction"
+        app:layout_constraintBottom_toTopOf="@+id/test3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/test">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/sp_directions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/test3"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Station"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/sp_stations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
         android:id="@+id/tv_wait_time"
         android:layout_width="wrap_content"
@@ -16,42 +69,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/sp_stations"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/bt_get"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:entries="@array/error" />
+    <!--    <Spinner-->
+    <!--        android:id="@+id/sp_stations"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="@+id/bt_get"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        android:entries="@array/error" />-->
 
-    <Spinner
-        android:id="@+id/sp_rail_lines"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/rail_lines"
-        app:layout_constraintBottom_toTopOf="@+id/sp_stations"
-        app:layout_constraintEnd_toStartOf="@+id/sp_directions"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent" />
+    <!--    <Spinner-->
+    <!--        android:id="@+id/sp_rail_lines"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:entries="@array/rail_lines"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/sp_stations"-->
+    <!--        app:layout_constraintEnd_toStartOf="@+id/sp_directions"-->
+    <!--        app:layout_constraintHorizontal_chainStyle="packed"-->
+    <!--        app:layout_constraintStart_toStartOf="parent" />-->
 
-    <Spinner
-        android:id="@+id/sp_directions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/cardinal_directions"
-        app:layout_constraintBottom_toTopOf="@+id/sp_stations"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sp_rail_lines" />
+    <!--    <Spinner-->
+    <!--        android:id="@+id/sp_directions"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:entries="@array/cardinal_directions"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/sp_stations"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/sp_rail_lines" />-->
 
     <Button
         android:id="@+id/bt_get"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="get"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/test3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
