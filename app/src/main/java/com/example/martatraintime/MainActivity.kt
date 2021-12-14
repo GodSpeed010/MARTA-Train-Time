@@ -21,6 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     val martaEndpoint: String = "http://developer.itsmarta.com/RealtimeTrain/RestServiceNextTrain/GetRealtimeArrivals"
 
+    val WAIT_TIME_KEY = "wait_time_key"
+    val STATION_NAME_KEY = "station_name_key"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,6 +40,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d("my_tag", "Retrieved data for ${trains.size} trains")
 
                 setStationSpinner(trains)
+
+                restoreViewsFromInstance(savedInstanceState)
 
                 findViewById<Button>(R.id.bt_get).setOnClickListener {
                     val station: String = findViewById<AutoCompleteTextView>(R.id.sp_stations).text.toString()
@@ -174,6 +179,30 @@ class MainActivity : AppCompatActivity() {
         }
         //else no digits were found
         return false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        //get the wait-time and station-name from the views
+        val waitTime: String = findViewById<TextView>(R.id.tv_wait_time).text.toString()
+        val stationName: String = findViewById<AutoCompleteTextView>(R.id.sp_stations).text.toString()
+
+        Log.d("my_tag", "onSaveInstanceState: waitTime is $waitTime")
+        Log.d("my_tag", "onSaveInstanceState: stationName is $stationName")
+
+        outState.putString(WAIT_TIME_KEY, waitTime)
+        outState.putString(STATION_NAME_KEY, stationName)
+    }
+
+    //restore views from savedInstanceState. Not using onRestoreInstanceState because Spinners are being populated in onCreate, so it would be overwritten
+    fun restoreViewsFromInstance(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            Log.d("my_tag", "onRestoreInstanceState: waitTime is ${savedInstanceState.getString(WAIT_TIME_KEY)}")
+            Log.d("my_tag", "onRestoreInstanceState: stationName is ${savedInstanceState.getString(STATION_NAME_KEY)}")
+
+            findViewById<TextView>(R.id.tv_wait_time).text = savedInstanceState.getString(WAIT_TIME_KEY)
+            findViewById<AutoCompleteTextView>(R.id.sp_stations).setText(savedInstanceState.getString(STATION_NAME_KEY), false)
+        }
     }
 }
 
