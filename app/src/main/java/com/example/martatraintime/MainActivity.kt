@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.widget.*
 import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
@@ -92,9 +93,9 @@ class MainActivity : AppCompatActivity() {
                     if (minTimeIndex == -1) {
                         Log.d("my_tag", "No Match")
 
-                        Toast.makeText(applicationContext,
-                        "Not Found",
-                        Toast.LENGTH_SHORT).show()
+                        val toast = Toast.makeText(applicationContext,"Not Found", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
 
                         findViewById<TextView>(R.id.tv_wait_time).text = ""
                     } else {
